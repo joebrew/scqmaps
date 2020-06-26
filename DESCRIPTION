@@ -1,0 +1,26 @@
+Package: scqmaps
+Title: PKG_TITLE
+Version: 0.0.0.9000
+Authors@R: person('Joe', 'Brew', email = 'joebrew@gmail.com', role = c('cre', 'aut'))
+Description: PKG_DESC.
+License: MIT + file LICENSE
+Imports: 
+    config,
+    golem,
+    shiny,
+    dplyr,
+    readr,
+    leaflet,
+    leaflet.extras,
+    shinyjs,
+    shinydashboard
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+URL: https://github.com/joebrew/scqmaps
+BugReports: https://github.com/joebrew/scqmaps/issues
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -1,0 +1,33 @@
+x,y,name,details
+1,1,Dummy,Dummy
+2,10,Dummy,Dummy
+3,8,Dummy,Dummy
+4,6,Dummy,Dummy
+5,2,Dummy,Dummy
+6,-1,Dummy,Dummy
+7,17,Dummy,Dummy
+8,9,Dummy,Dummy
+9,8,Dummy,Dummy
+8,2,Dummy,Dummy
+7,3,Dummy,Dummy
+6,4,Dummy,Dummy
+5,5,Dummy,Dummy
+4,6,Dummy,Dummy
+3,7,Dummy,Dummy
+2,8,Dummy,Dummy
+1,9,Dummy,Dummy
+-33.685364,-4.565476,Test 1,NA
+-33.333875,-14.944787,Test 1,NA
+-22.437695,-13.581924,Test 1,NA
+-22.61344,-3.162458,Test 1,NA
+-30.697702,3.513418,Test 1,NA
+-33.685364,-4.565476,Test 1,NA
+10.426589,-15.114555,Test 2,NA
+10.426589,-3.864257,Test 2,NA
+20.971279,-3.864257,Test 2,NA
+20.971279,-15.114555,Test 2,NA
+10.426589,-15.114555,Test 2,NA
+25.624944,34.201492,Test 5,NA
+51.826885,0,Test 5,NA
+49.270604,63.03142,Test 5,NA
+25.624944,34.201492,Test 5,NA
