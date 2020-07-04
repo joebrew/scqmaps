@@ -21,6 +21,7 @@ app_ui <- function(request) {
           column(4, align = 'center',
                  h3('Controls'),
                  textInput('name', 'Name'),
+                 textInput('person', 'Person'),
                  textInput('comments', 'Comments'), 
                  actionButton('draw', 'Draw'),
                  actionButton('clear', 'Clear'),
@@ -108,7 +109,7 @@ mobile_golem_add_external_resources <- function(){
 #' @import readr
 #' @import dplyr
 app_server <- function(input, output, session){
-  
+
   # Create an empty data object if it doesn't exist
   data_path <- 'file.csv'
   if(!file.exists(data_path)){
@@ -136,6 +137,7 @@ app_server <- function(input, output, session){
     coords <- matrix(coords, ncol = 2, byrow = T)
     coords <- data.frame(coords); names(coords) <- c('x', 'y')
     coords$name <- input$name
+    coords$person <- input$person
     coords$details <- input$details
     new_df <- coords
     replacement <- bind_rows(old_df, new_df)
@@ -146,8 +148,19 @@ app_server <- function(input, output, session){
   
   output$leaf <- renderLeaflet({
     input$clear
+    input$submit
     leaflet() %>%
-      addTiles()
+      setView(lng = 1.3829, lat = 41.5322, zoom = 14) %>%
+      # Base groups
+      addTiles(group = "OSM (default)") %>%
+      addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
+      addProviderTiles(providers$Stamen.Toner, group = "Toner") %>%
+      addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+      # Layers control
+      addLayersControl(
+        baseGroups = c("OSM (default)", 'Satellite', "Toner", "Toner Lite"),
+        options = layersControlOptions(collapsed = FALSE)
+      )
   })
   
   observeEvent(input$show_previous,{
@@ -164,8 +177,7 @@ app_server <- function(input, output, session){
           leafletProxy('leaf', session) %>%
             addPolygons(lng = sub_data$x,
                         lat = sub_data$y,
-                        popup = paste0(sub_data$name[1], ' ',
-                                       sub_data$details[1]))
+                        popup = paste0(sub_data$name[1]))
         }
       }
     } else {
@@ -217,6 +229,13 @@ app_server <- function(input, output, session){
       clearMarkers() %>%
       clearShapes() %>%
       clearControls()
+  })
+  
+  observeEvent(input$submit,{
+    updateCheckboxInput(session = session,
+                        inputId = 'show_previous',
+                        label = 'Show previous',
+                        value = FALSE)
   })
   
 }
