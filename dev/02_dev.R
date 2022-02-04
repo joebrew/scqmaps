@@ -51,7 +51,7 @@ usethis::use_test( "app" )
 # Documentation
 
 ## Vignette ----
-usethis::use_vignette("scqmaps")
+usethis::use_vignette("zonemaker")
 devtools::build_vignettes()
 
 ## Code coverage ----

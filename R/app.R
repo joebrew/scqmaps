@@ -14,21 +14,22 @@ app_ui <- function(request) {
   tagList(
     mobile_golem_add_external_resources(),
     dashboardPage(
-      dashboardHeader (title = "SCQmaps"),
+      dashboardHeader (title = "zonemaker"),
       dashboardSidebar(),
       dashboardBody(
         fluidRow(
           column(4, align = 'center',
                  h3('Controls'),
                  textInput('name', 'Name'),
-                 textInput('person', 'Person'),
+                 selectInput('zone', 'Zone', LETTERS[1:5]),
                  textInput('comments', 'Comments'), 
                  actionButton('draw', 'Draw'),
-                 actionButton('clear', 'Clear'),
+                 # actionButton('clear', 'Clear'),
                  actionButton('submit', 'Submit'),
                  checkboxInput('show_previous', 'Show previous')),
           column(8, align = 'center',
-                 leafletOutput('leaf'))
+                 leafletOutput('leaf',
+                               height = 800))
         ),
         fluidRow(
           column(12,
@@ -50,7 +51,7 @@ app_ui <- function(request) {
 #' @noRd
 mobile_golem_add_external_resources <- function(){
   addResourcePath(
-    'www', system.file('app/www', package = 'scqmaps')
+    'www', system.file('app/www', package = 'zonemaker')
   )
 
   
@@ -137,7 +138,7 @@ app_server <- function(input, output, session){
     coords <- matrix(coords, ncol = 2, byrow = T)
     coords <- data.frame(coords); names(coords) <- c('x', 'y')
     coords$name <- input$name
-    coords$person <- input$person
+    coords$zone <- input$zone
     coords$details <- input$details
     new_df <- coords
     replacement <- bind_rows(old_df, new_df)
@@ -150,17 +151,24 @@ app_server <- function(input, output, session){
     input$clear
     input$submit
     leaflet() %>%
-      setView(lng = 1.3829, lat = 41.5322, zoom = 14) %>%
+      # setView(lng = 1.3829, lat = 41.5322, zoom = 14) %>%
       # Base groups
       addTiles(group = "OSM (default)") %>%
       addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") %>%
       addProviderTiles(providers$Stamen.Toner, group = "Toner") %>%
       addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+      addPolylines(data = mop2, color = 'black', opacity = 1) %>%
+      addPolygons(data = cluster_buffers, fillColor = 'blue', fillOpacity = 0.6,
+                  label = cluster_buffers@data$cluster) %>%
+      # addCircleMarkers(data = cluster_borders, fillColor = 'red', fillOpacity = 0.2) %>%
+      addCircleMarkers(data = households_in_study, fillColor = 'green', 
+                       color = 'green', fillOpacity = 0.9, radius = 2,
+                       label = households_in_study$hh_id) %>%
       # Layers control
       addLayersControl(
         baseGroups = c("OSM (default)", 'Satellite', "Toner", "Toner Lite"),
         options = layersControlOptions(collapsed = FALSE)
-      )
+      ) 
   })
   
   observeEvent(input$show_previous,{
@@ -177,12 +185,16 @@ app_server <- function(input, output, session){
           leafletProxy('leaf', session) %>%
             addPolygons(lng = sub_data$x,
                         lat = sub_data$y,
-                        popup = paste0(sub_data$name[1]))
+                        popup = paste0(sub_data$name[1]),
+                        group = 'previous',
+                        fillColor = 'red',
+                        color = 'red',
+                        fillOpacity = 0.8)
         }
       }
     } else {
       leafletProxy('leaf', session) %>%
-        clearShapes()
+        clearGroup('previous')
     }
     
     
@@ -222,14 +234,14 @@ app_server <- function(input, output, session){
     p
   })
   
-  observeEvent(input$clear, {
-    message('Clearing map')
-    leafletProxy('leaf', session) %>%
-      removeDrawToolbar(clearFeatures = TRUE) %>%
-      clearMarkers() %>%
-      clearShapes() %>%
-      clearControls()
-  })
+  # observeEvent(input$clear, {
+  #   message('Clearing map')
+  #   leafletProxy('leaf', session) %>%
+  #     removeDrawToolbar(clearFeatures = TRUE) %>%
+  #     clearMarkers() %>%
+  #     clearShapes() %>%
+  #     clearControls()
+  # })
   
   observeEvent(input$submit,{
     updateCheckboxInput(session = session,

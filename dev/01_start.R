@@ -14,13 +14,12 @@
 ## Fill the DESCRIPTION ----
 ## Add meta data about your application
 golem::fill_desc(
-  pkg_name = "scqmaps", # The Name of the package containing the App 
+  pkg_name = "zonemaker", # The Name of the package containing the App 
   pkg_title = "PKG_TITLE", # The Title of the package containing the App 
   pkg_description = "PKG_DESC.", # The Description of the package containing the App 
   author_first_name = "Joe", # Your First Name
   author_last_name = "Brew", # Your Last Name
-  author_email = "joebrew@gmail.com", # Your Email
-  repo_url = 'https://github.com/joebrew/scqmaps' # The URL of the GitHub Repo (optional) 
+  author_email = "joebrew@gmail.com"
 )     
 
 ## Set {golem} options ----
